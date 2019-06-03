@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -17,7 +17,9 @@ class MicroPost
     private $id;
    
     /**
-     * @ORM\Column(type="string",length=280)     
+     * @ORM\Column(type="string",length=280)  
+     * @Assert\NotBlank()
+     * @Assert\Length(min=10,minMessage="Enter please minimum 8 caracters")   
      */
 
     private $text;
