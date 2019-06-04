@@ -77,7 +77,7 @@ class MicroPostController {
   }
  
    /**
-    * @Route("/delete/{id}",name="micro_post-delete")
+    * @Route("/delete/{id}",name="micro_post_delete")
     *
     */
    public function delete(MicroPost $micropost)
