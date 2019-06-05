@@ -29,7 +29,7 @@ class RegistrationController extends Controller
             $user->setPassword($password);
 
             // 4) save the User!
-            dd($user);
+            
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();

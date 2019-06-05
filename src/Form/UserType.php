@@ -21,11 +21,14 @@ class UserType extends AbstractType
         $builder
             ->add('email', EmailType::class)
             ->add('username', TextType::class)
+            ->add('fullName',TextType::class)
             ->add('plainPassword', RepeatedType::class, array(
                 'type' => PasswordType::class,
+                'invalid_message' => 'The password fields must match.',
                 'first_options'  => array('label' => 'Password'),
                 'second_options' => array('label' => 'Repeat Password'),
             ))
+            
             ->add('TermsAgree',CheckboxType::class,[
                 'mapped'=>false,
                 'constraints'=>new IsTrue(),

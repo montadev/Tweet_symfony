@@ -36,6 +36,13 @@ class User implements UserInterface,\Serializable
     private $username;
 
     /**
+    * @ORM\Column(type="string",length=191)
+    * @Assert\NotBlank()
+    * @Assert\Length(min=4,max=20)
+    */
+    private $fullName;
+
+    /**
      * @Assert\NotBlank()
      * @Assert\Length(max=4096)
      */
@@ -45,14 +52,13 @@ class User implements UserInterface,\Serializable
      * The below length depends on the "algorithm" you use for encoding
      * the password, but this works well with bcrypt.
      *
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="string", length=64,nullable=true)
      */
     private $password;
 
    
-    // other properties and methods
-
-    private $fullName;
+    
+   
 
     
 
@@ -152,4 +158,8 @@ class User implements UserInterface,\Serializable
 
         return $this;
     }
+
+    
+
+    
 }
