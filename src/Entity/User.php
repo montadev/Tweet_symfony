@@ -1,128 +1,121 @@
 <?php
-
+// src/Entity/User.php
 namespace App\Entity;
 
-use Symfony\Component\Validator\Constraints as Assert;
+use Serializable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @UniqueEntity(fields="email",message="this email already in use")
- * @UniqueEntity(fields="username",message="this username already in use")
+ * @ORM\Entity
+ * @UniqueEntity(fields="email", message="Email already taken")
+ * @UniqueEntity(fields="username", message="Username already taken")
  */
 class User implements UserInterface,\Serializable
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\Id
      * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string",length=191 ,unique=true) 
-     * @Assert\NotBlank() 
-     * @Assert\Length(min=5,max=50)
-     */
-    private $username;
-
-    /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=191, unique=true)
      * @Assert\NotBlank()
-     */
-    private $password;
-
-    /**
-     * @Assert\NotBlank()
-     * @Assert\Length(min=8,max=4096)
-     *
-     */ 
-    private $plainPassword;
-
-    /**
-     * @ORM\Column(type="string",length=191,unique=true)
-     * @Assert\NotBlank()  
+     * @Assert\Email()
      */
     private $email;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=191, unique=true)
      * @Assert\NotBlank()
-     * @Assert\Length(min=4,max=50)
      */
+    private $username;
+
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Length(max=4096)
+     */
+    private $plainPassword;
+
+    /**
+     * The below length depends on the "algorithm" you use for encoding
+     * the password, but this works well with bcrypt.
+     *
+     * @ORM\Column(type="string", length=64)
+     */
+    private $password;
+
+   
+    // other properties and methods
+
     private $fullName;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    
 
-    public function getUsername(): ?string
-    {
-        return $this->username;
-    }
-
-    public function setUsername(string $username): self
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
+    public function getEmail()
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail($email)
     {
         $this->email = $email;
-
-        return $this;
     }
 
-    public function getFullName(): ?string
+    public function getUsername()
     {
-        return $this->fullName;
+        return $this->username;
     }
 
-    public function setFullName(string $fullName): self
+    public function setUsername($username)
     {
-        $this->fullName = $fullName;
-
-        return $this;
+        $this->username = $username;
     }
 
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword($password)
+    {
+        $this->plainPassword = $password;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    public function getSalt()
+    {
+        // The bcrypt and argon2i algorithms don't require a separate salt.
+        // You *may* need a real salt if you choose a different encoder.
+        return null;
+    }
+
+ 
+
+    public function eraseCredentials()
+    {
+    }
     public function getRoles()
     {
            return [
                'ROLE_USER'
            ];
     }
-    public function getSalt()
-    {
-             return null;
-    }
-    public function eraseCredentials()
-    {
 
-    }
-
-    public function serialize() 
+     public function serialize() 
     {
          return serialize([
                $this->id,
@@ -138,5 +131,25 @@ class User implements UserInterface,\Serializable
              $this->username,
              $this->password
              )=unserialize($data);
+    }
+
+    /**
+     * Get the value of fullName
+     */ 
+    public function getFullName()
+    {
+        return $this->fullName;
+    }
+
+    /**
+     * Set the value of fullName
+     *
+     * @return  self
+     */ 
+    public function setFullName($fullName)
+    {
+        $this->fullName = $fullName;
+
+        return $this;
     }
 }

@@ -18,7 +18,7 @@ class MicroPost
    
     /**
      * @ORM\Column(type="string",length=280)  
-     * @Assert\NotBlank()
+     
      * @Assert\Length(min=10,minMessage="Enter please minimum 8 caracters")   
      */
 
