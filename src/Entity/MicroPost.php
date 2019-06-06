@@ -29,6 +29,12 @@ class MicroPost
      */
 
     private $time;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts")
+     * 
+     */
+    private $user;
     
     public function getId(): ?int
     {
@@ -75,6 +81,18 @@ class MicroPost
     public function setTime($time)
     {
         $this->time = $time;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

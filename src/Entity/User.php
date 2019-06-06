@@ -2,6 +2,8 @@
 // src/Entity/User.php
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Serializable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -15,6 +17,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class User implements UserInterface,\Serializable
 {
+
+     const ROLE_USER='ROLE_USER';
+     const ROLE_ADMIN='ROLE_ADMIN';
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -55,6 +60,22 @@ class User implements UserInterface,\Serializable
      * @ORM\Column(type="string", length=64,nullable=true)
      */
     private $password;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\MicroPost", mappedBy="user")
+     */
+    private $posts;
+
+  /**
+   * @ORM\Column(type="simple_array")
+   *
+   */
+    private $roles;
+
+    public function __construct()
+    {
+        $this->posts = new ArrayCollection();
+    }
 
    
     
@@ -116,9 +137,7 @@ class User implements UserInterface,\Serializable
     }
     public function getRoles()
     {
-           return [
-               'ROLE_USER'
-           ];
+           return $this->roles;
     }
 
      public function serialize() 
@@ -159,7 +178,58 @@ class User implements UserInterface,\Serializable
         return $this;
     }
 
+    /**
+     * @return Collection|MicroPost[]
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(MicroPost $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(MicroPost $post): self
+    {
+        if ($this->posts->contains($post)) {
+            $this->posts->removeElement($post);
+            // set the owning side to null (unless already changed)
+            if ($post->getUser() === $this) {
+                $post->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
     
 
     
+
+    /**
+     * Get the value of id
+     */ 
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set the value of roles
+     *
+     * @return  self
+     */ 
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
 }
