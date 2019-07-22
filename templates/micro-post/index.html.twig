@@ -10,13 +10,21 @@
 
   {% endfor%}
 
-   
+    {% if followUser| length > 0 %}
+     <p> You currently do not follow anyone ,You might find there users interesting</p>
+      
+       {% for followuser in followUser %}
+            {% if(followuser != app.user) %}
+        <a href="{{path('following_follow',{id:followuser.id})}}">@{{followuser.username}}</a>
+              {% endif %}
+       {% endfor %}
+    {% else%}
  
   {% for post in posts%}
    
-    <a href="{{path('micro_post_post',{id:post.id})}}">
+   
     {{include('micro-post/post.html.twig',{'post':post})}}
-    </a>
+    
 
     <small class="d-block text-right mt-3">
         {% if is_granted('edit',post) %}
@@ -31,4 +39,6 @@
      
 
    {% endfor%}
+
+    {% endif %}
 {% endblock %}

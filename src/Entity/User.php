@@ -2,10 +2,13 @@
 // src/Entity/User.php
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Serializable;
+use App\Entity\MicroPost;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -72,9 +75,33 @@ class User implements UserInterface,\Serializable
    */
     private $roles;
 
+  /**
+   * @ORM\ManyToMany(targetEntity="App\Entity\User",mappedBy="following")
+   *
+   */
+    private $followers;
+
+  /**
+   * @ORM\ManyToMany(targetEntity="App\Entity\User",inversedBy="followers")
+   * @ORM\JoinTable(name="following",
+   *    joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+   *    inverseJoinColumns={@ORM\JoinColumn(name="following_user_id", referencedColumnName="id")}
+   * )
+   */
+    private $following;
+
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\MicroPost",mappedBy="likedBy")
+     */
+     private $postsLiked;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->followers=new ArrayCollection();
+        $this->following=new ArrayCollection();
+        $this->postsLiked=new ArrayCollection();
     }
 
    
@@ -231,5 +258,21 @@ class User implements UserInterface,\Serializable
         $this->roles = $roles;
 
         return $this;
+    }
+
+    /**
+     * Get the value of followers
+     */ 
+    public function getFollowers()
+    {
+        return $this->followers;
+    }
+
+    /**
+     * Get )
+     */ 
+    public function getFollowing()
+    {
+        return $this->following;
     }
 }

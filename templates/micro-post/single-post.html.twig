@@ -4,4 +4,113 @@
  {% block body%}
   
   {{include('micro-post/post.html.twig',{'post':post})}}
+   
+    {% set isLiked=post.getLikedBy.contains(app.user) %}
+
+      
+   <i class="fa fa-thumbs-o-up"><span id="count-like-sys">{{post.likedBy.count()}}</span></i>
+       
+       <button id="likes-like" data-like="{{post.id}}" style="display:{% if isLiked %}none{% else %}block{%endif%}" class="btn btn-outline-secondary btn-sm" id="like">
+         Like<span class="badge badge-light" id="count-like" >{{post.likedBy.count()}}</span>
+       </button>
+
+          <button id="likes-unlike" data-dislike="{{post.id}}"  style="display:{% if isLiked %}block{% else %}none{%endif%}" class="btn btn-outline-secondary btn-sm" id="unlike">
+         unLike<span class="badge badge-light" ></span>
+       </button>
  {% endblock%}
+
+  {% block javascripts %}
+        {{parent()}}
+        <script>
+         $(document).ready(function(){
+
+              
+              document.getElementById("likes-like").addEventListener("click", like);
+
+             document.getElementById("likes-unlike").addEventListener("click", dislike); 
+
+
+              function like(event) {
+                
+                 event.preventDefault(); 
+
+                     name=$('#likes-like').data('like');
+                     
+                      $.ajax({
+                                type    :"POST",
+                                url     :"{{path('likes_like')}}",
+                                data    :
+                                        { 
+                                          name: name,
+                                         
+                                         },
+                                dataType:"json",
+
+                                success :function(response){
+                                   
+                                   $('#count-like-sys').html(response.count);
+                                   $('#count-like').html(response.count);
+                                   $('#likes-like').css('display','none');
+                                   $('#likes-unlike').css('display','block');
+                                    
+                                    
+                                },
+                                 
+                                error :function(response,xhr, status) {
+                                         
+                                        if(response.status==401)
+                                        {
+                                          alert("vous deve connecté");
+                                        }
+                                        
+
+                                        
+                                  }
+                          });  
+              }
+
+            function dislike(event)
+         {
+              event.preventDefault(); 
+
+                     name=$('#likes-unlike').data('dislike');
+                      $.ajax({
+                                type    :"POST",
+                                url     :"{{path('like_unlike')}}",
+                                data    :
+                                        { 
+                                          name: name,
+                                         
+                                         },
+                                dataType:"json",
+
+                                success :function(response){
+                                   
+                                   $('#count-like-sys').html(response.count);
+                                   $('#count-like').html(response.count);
+                                   $('#likes-like').css('display','block');
+                                   $('#likes-unlike').css('display','none');
+                                    
+                                    
+                                },
+                                 
+                                error :function(response,xhr, status) {
+                                         
+                                        if(response.status==401)
+                                        {
+                                          alert("vous deve connecté");
+                                        }
+                                        
+
+                                        
+                                  }
+                          });  
+         }
+          
+         });
+
+            
+             
+
+         </script>
+ {% endblock %}
