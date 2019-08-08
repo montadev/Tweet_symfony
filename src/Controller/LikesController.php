@@ -25,12 +25,12 @@ class LikesController extends AbstractController
      {
          $id=$request->request->get('name');
 
-        $micropost=$micropostrepo->find($id);
+           $micropost=$micropostrepo->find($id);
            $currentUser=$this->getUser();
 
            if(!$currentUser instanceof User)
            {
-              return new JsonResponse([],Response::HTTP_UNAUTHORIZED);
+              return new JsonResponse([],JsonResponse::HTTP_UNAUTHORIZED);
            }
 
            $micropost->like($currentUser);

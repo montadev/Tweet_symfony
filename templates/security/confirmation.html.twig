@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+  {% if user %}
+
+   <h1>ok your account is ready to use to login <a href="{{url('security_login')}}">login</a></h1>
+  {% else %}
+
+     <h1>Something is wrong </h1>
+  {% endif %}
+
+{% endblock %}
